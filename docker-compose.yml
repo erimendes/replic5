@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+
+  balancemsql:
+    image: 'nginx'
+    container_name: 'balancemsql'
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+      - '4020:4020'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - blcnetwork
+
+  bdm1:
+    container_name: bdm1
+    image: mysql:debian
+#    ports:
+#      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha1
+      - MYSQL_DATABASE=aula_bdm1
+#      - MYSQL_REPLICATION_USER=repl
+#      - MYSQL_REPLICATION_PASSWORD=password
+#      - MYSQL_LOG_SLAVE_UPDATES=ON
+#      - MYSQL_INITDB_SKIP_TZINFO=yes
+#    volumes:
+#      - ./bdm1-data:/var/lib/mysql
+#      - ./my-bdm1.cnf:/etc/mysql/my.cnf
+#      - ./init-replication.sh:/docker-entrypoint-initdb.d/init-replication.sh
+    networks:
+      - blcnetwork
+
+  bdm2:
+    container_name: bdm2
+    image: mysql:debian
+#    ports:
+#      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha1
+      - MYSQL_DATABASE=aula_bdm2
+#      - MYSQL_REPLICATION_USER=repl
+#      - MYSQL_REPLICATION_PASSWORD=password
+#      - MYSQL_MASTER_HOST=bdm1
+#      - MYSQL_LOG_SLAVE_UPDATES=ON
+#      - MYSQL_INITDB_SKIP_TZINFO=yes
+    depends_on:
+      - bdm1
+#    volumes:
+#      - ./bdm2-data:/var/lib/mysql
+#     - ./my-bdm2.cnf:/etc/mysql/my.cnf
+#      - ./init-replication.sh:/docker-entrypoint-initdb.d/init-replication.sh
+    networks:
+      - blcnetwork
+
+  bdm3:
+    container_name: bdm3
+    image: mysql:debian
+#    ports:
+#      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha1
+      - MYSQL_DATABASE=aula_bdm3
+#      - MYSQL_REPLICATION_USER=repl
+#      - MYSQL_REPLICATION_PASSWORD=password
+#      - MYSQL_MASTER_HOST=bdm1
+#      - MYSQL_LOG_SLAVE_UPDATES=ON
+#      - MYSQL_INITDB_SKIP_TZINFO=yes
+    depends_on:
+      - bdm1
+#    volumes:
+#      - ./bdm3-data:/var/lib/mysql
+  #    - ./my-bdm3.cnf:/etc/mysql/my.cnf
+  #    - ./my-bdm3.cnf:/etc/mysql/my.cnf
+
+    networks:
+      - blcnetwork
+
+networks:
+  blcnetwork:
+    name: blcnetwork
